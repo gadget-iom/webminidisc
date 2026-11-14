@@ -1,0 +1,39 @@
+
+name: Build WebMiniDisc
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install --ignore-scripts
+
+      - name: Build website
+        run: npm run build
+
+      - name: Package website
+        run: |
+          cd build
+          zip -r ../webminidisc.zip .
+
+      - name: Upload website ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: webminidisc
+          path: webminidisc.zip
